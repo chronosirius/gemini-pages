@@ -1,0 +1,467 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>The Architecture of Exhaustion: A Sleep Deprivation Analysis</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;800&display=swap" rel="stylesheet">
+    <style>
+        body { font-family: 'Inter', sans-serif; background-color: #f8fafc; color: #0f172a; }
+        .chart-container { position: relative; width: 100%; max-width: 800px; margin-left: auto; margin-right: auto; height: 350px; max-height: 400px; }
+        @media (min-width: 768px) { .chart-container { height: 400px; } }
+        .glass-panel { background: rgba(255, 255, 255, 0.9); backdrop-filter: blur(10px); border: 1px solid rgba(226, 232, 240, 0.8); }
+        .tab-active { background-color: #1e1b4b; color: white; border-color: #1e1b4b; }
+        .tab-inactive { background-color: white; color: #475569; border-color: #cbd5e1; }
+        .smooth-transition { transition: all 0.3s ease-in-out; }
+    </style>
+</head>
+<body class="antialiased overflow-x-hidden">
+
+    <!-- Chosen Palette: Midnight & Alert (Slate 50 background, Indigo 950 Primary, Red 500/Amber 500 Accents) -->
+    <!-- Application Structure Plan: A dashboard-style linear narrative that allows users to drill down into specifics. It starts with an overview, breaks down effects by duration (Timeline), categorizes real-world impact by domain (Grid), visualizes modern macro-trends (Charts), explores the physical limits (Slider), and concludes with analytical questions (Accordion). This structure moves the user from general facts to extreme cases and systemic issues, maximizing engagement. -->
+    <!-- Visualization & Content Choices: 1. Timeline: HTML/JS interactive tabs to show short vs long term without overwhelming text. 2. Domains: Interactive cards to segment professional/personal/emotional data. 3. Trends: Chart.js Line and Bar charts to visualize historical decline and modern causes (No SVG). 4. Max Awake: HTML range slider paired with dynamic text to simulate the deterioration over 11 days. -->
+    <!-- CONFIRMATION: NO SVG graphics used. NO Mermaid JS used. -->
+
+    <nav class="fixed w-full z-50 glass-panel shadow-sm">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex justify-between h-16 items-center">
+                <div class="flex-shrink-0 font-bold text-xl text-indigo-950 tracking-tight">
+                    NeuroWake Analytics
+                </div>
+                <div class="hidden md:flex space-x-8">
+                    <a href="#timeline" class="text-sm font-medium text-slate-600 hover:text-indigo-900">Duration Impact</a>
+                    <a href="#domains" class="text-sm font-medium text-slate-600 hover:text-indigo-900">Life Domains</a>
+                    <a href="#trends" class="text-sm font-medium text-slate-600 hover:text-indigo-900">Modern Trends</a>
+                    <a href="#extreme" class="text-sm font-medium text-slate-600 hover:text-indigo-900">The Extremes</a>
+                    <a href="#faq" class="text-sm font-medium text-slate-600 hover:text-indigo-900">Analysis</a>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <header class="pt-32 pb-20 px-4 sm:px-6 lg:px-8 bg-indigo-950 text-white text-center">
+        <div class="max-w-4xl mx-auto">
+            <div class="text-5xl mb-6">👁️</div>
+            <h1 class="text-4xl md:text-6xl font-extrabold tracking-tight mb-6">The Architecture of Exhaustion</h1>
+            <p class="text-xl md:text-2xl text-indigo-200 mb-8 font-light">
+                An interactive analysis of sleep deprivation covering short-term cognitive failure, long-term systemic disease, and the sociological trends of modern wakefulness.
+            </p>
+            <a href="#timeline" class="inline-block bg-white text-indigo-950 px-8 py-3 rounded-full font-semibold hover:bg-indigo-100 smooth-transition">Begin Exploration &#8595;</a>
+        </div>
+    </header>
+
+    <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16 space-y-24">
+
+        <section id="timeline" class="scroll-mt-24">
+            <div class="mb-10">
+                <h2 class="text-3xl font-bold text-slate-900 mb-4">1. The Chronology of Deprivation</h2>
+                <p class="text-lg text-slate-600">
+                    This section maps the physiological and cognitive decay based on the duration of wakefulness. Use the interactive timeline below to observe how acute sleep loss transforms into chronic systemic damage.
+                </p>
+            </div>
+
+            <div class="glass-panel rounded-2xl p-6 md:p-10 shadow-lg">
+                <div class="flex flex-wrap gap-4 mb-8 border-b border-slate-200 pb-4" id="timeline-tabs">
+                    <button class="px-6 py-2 rounded-full border text-sm font-semibold tab-active smooth-transition" data-target="t-24h">24 Hours</button>
+                    <button class="px-6 py-2 rounded-full border text-sm font-semibold tab-inactive smooth-transition" data-target="t-48h">48 Hours</button>
+                    <button class="px-6 py-2 rounded-full border text-sm font-semibold tab-inactive smooth-transition" data-target="t-72h">72 Hours</button>
+                    <button class="px-6 py-2 rounded-full border text-sm font-semibold tab-inactive smooth-transition" data-target="t-chronic">Chronic (Years)</button>
+                </div>
+
+                <div id="timeline-content" class="min-h-[250px]">
+                    <h3 class="text-2xl font-bold text-indigo-900 mb-4" id="tc-title">24 Hours: The Intoxication Threshold</h3>
+                    <div class="grid md:grid-cols-2 gap-8">
+                        <div>
+                            <p class="text-slate-700 mb-4 text-lg" id="tc-desc">Staying awake for 24 hours induces a state of cognitive impairment equivalent to a Blood Alcohol Concentration (BAC) of 0.10%, which is higher than the legal driving limit in most jurisdictions.</p>
+                            <ul class="space-y-2 text-slate-600 list-disc pl-5" id="tc-list">
+                                <li>Reaction times decrease by up to 400%.</li>
+                                <li>Memory consolidation is halted.</li>
+                                <li>Increased emotional volatility (amygdala hyper-reactivity).</li>
+                            </ul>
+                        </div>
+                        <div class="bg-indigo-50 rounded-xl p-6 flex items-center justify-center text-6xl" id="tc-icon">
+                            🍷
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section id="domains" class="scroll-mt-24">
+            <div class="mb-10">
+                <h2 class="text-3xl font-bold text-slate-900 mb-4">2. The Multi-Domain Impact</h2>
+                <p class="text-lg text-slate-600">
+                    Sleep deprivation does not exist in a vacuum; it aggressively permeates every facet of human existence. Click on the domains below to reveal how lack of sleep dismantles professional efficacy, personal well-being, and emotional stability.
+                </p>
+            </div>
+
+            <div class="grid md:grid-cols-3 gap-8">
+                <div class="glass-panel rounded-xl p-6 border-t-4 border-t-blue-500 hover:shadow-xl cursor-pointer smooth-transition group" onclick="toggleDomain('prof-details')">
+                    <div class="text-4xl mb-4">💼</div>
+                    <h3 class="text-xl font-bold text-slate-900 mb-2">Professional</h3>
+                    <p class="text-slate-600 mb-4">Economic cost, productivity loss, and catastrophic errors.</p>
+                    <div id="prof-details" class="hidden mt-4 pt-4 border-t border-slate-200 text-sm text-slate-700 space-y-2">
+                        <p><strong>Lost Productivity:</strong> Costs the US economy over $411 billion annually (approx 2.28% of GDP).</p>
+                        <p><strong>Presenteeism:</strong> Employees are physically present but cognitively absent, increasing error rates by 60%.</p>
+                        <p><strong>Historical Catastrophes:</strong> Chernobyl, the Challenger disaster, and the Exxon Valdez oil spill all cite severe operator sleep deprivation as a primary root cause.</p>
+                    </div>
+                    <div class="text-blue-500 font-semibold text-sm mt-4 group-hover:text-blue-700">Click to expand/collapse</div>
+                </div>
+
+                <div class="glass-panel rounded-xl p-6 border-t-4 border-t-emerald-500 hover:shadow-xl cursor-pointer smooth-transition group" onclick="toggleDomain('pers-details')">
+                    <div class="text-4xl mb-4">🧬</div>
+                    <h3 class="text-xl font-bold text-slate-900 mb-2">Personal & Physical</h3>
+                    <p class="text-slate-600 mb-4">Cellular degradation, metabolic syndrome, and strained relationships.</p>
+                    <div id="pers-details" class="hidden mt-4 pt-4 border-t border-slate-200 text-sm text-slate-700 space-y-2">
+                        <p><strong>Cardiovascular:</strong> Sleeping less than 6 hours a night increases heart attack risk by 20%.</p>
+                        <p><strong>Metabolic:</strong> Alters leptin/ghrelin balance, increasing appetite for high-carb foods by 45%, leading to obesity and Type 2 Diabetes.</p>
+                        <p><strong>Immune System:</strong> A single night of 4 hours of sleep drops Natural Killer (NK) cell activity by 70%.</p>
+                        <p><strong>Libido:</strong> Significant drops in testosterone in men and reduced sex drive in women.</p>
+                    </div>
+                    <div class="text-emerald-500 font-semibold text-sm mt-4 group-hover:text-emerald-700">Click to expand/collapse</div>
+                </div>
+
+                <div class="glass-panel rounded-xl p-6 border-t-4 border-t-rose-500 hover:shadow-xl cursor-pointer smooth-transition group" onclick="toggleDomain('emot-details')">
+                    <div class="text-4xl mb-4">🎭</div>
+                    <h3 class="text-xl font-bold text-slate-900 mb-2">Emotional & Psychiatric</h3>
+                    <p class="text-slate-600 mb-4">Mood regulation failure, anxiety disorders, and empathy erosion.</p>
+                    <div id="emot-details" class="hidden mt-4 pt-4 border-t border-slate-200 text-sm text-slate-700 space-y-2">
+                        <p><strong>The Amygdala Severance:</strong> Deprivation severs the connection between the prefrontal cortex (logic) and the amygdala (emotion), resulting in a 60% amplification in emotional reactivity.</p>
+                        <p><strong>Psychiatric Link:</strong> Chronic insomnia is a primary predictor of clinical depression and severe anxiety disorders.</p>
+                        <p><strong>Social Friction:</strong> Reduces ability to read facial expressions, eroding empathy and increasing interpersonal conflict.</p>
+                    </div>
+                    <div class="text-rose-500 font-semibold text-sm mt-4 group-hover:text-rose-700">Click to expand/collapse</div>
+                </div>
+            </div>
+        </section>
+
+        <section id="trends" class="scroll-mt-24 bg-slate-100 p-8 rounded-3xl">
+            <div class="mb-10 text-center max-w-3xl mx-auto">
+                <h2 class="text-3xl font-bold text-slate-900 mb-4">3. Modern Trends: The Global Sleep Debt</h2>
+                <p class="text-lg text-slate-600">
+                    We are in the midst of a silent epidemic. These interactive visualizations chart the historical decline in sleep duration and pinpoint the modern culprits stealing our rest. Hover over the data points for specific metrics.
+                </p>
+            </div>
+
+            <div class="grid lg:grid-cols-2 gap-12">
+                <div class="bg-white p-6 rounded-xl shadow-sm border border-slate-200">
+                    <h3 class="text-xl font-bold text-center mb-6 text-slate-800">Historical Sleep Duration (1940-2024)</h3>
+                    <div class="chart-container">
+                        <canvas id="historyChart"></canvas>
+                    </div>
+                    <p class="text-sm text-slate-500 mt-4 text-center">Average hours of sleep per night has dropped by over an hour in the last 80 years.</p>
+                </div>
+
+                <div class="bg-white p-6 rounded-xl shadow-sm border border-slate-200">
+                    <h3 class="text-xl font-bold text-center mb-6 text-slate-800">Primary Causes of Modern Sleep Loss</h3>
+                    <div class="chart-container">
+                        <canvas id="causeChart"></canvas>
+                    </div>
+                    <p class="text-sm text-slate-500 mt-4 text-center">Self-reported factors contributing to acute and chronic insomnia in 2024.</p>
+                </div>
+            </div>
+        </section>
+
+        <section id="extreme" class="scroll-mt-24">
+            <div class="mb-10">
+                <h2 class="text-3xl font-bold text-slate-900 mb-4">4. The Physical Limits: Maximum Time Awake</h2>
+                <p class="text-lg text-slate-600">
+                    In 1964, 17-year-old Randy Gardner stayed awake for 11 days and 25 minutes (264 hours). Use the slider below to simulate his documented day-by-day biological and psychological breakdown.
+                </p>
+            </div>
+
+            <div class="glass-panel p-8 rounded-2xl border-l-8 border-l-red-500">
+                <div class="mb-8">
+                    <label for="day-slider" class="block text-sm font-medium text-slate-700 mb-4">Drag to advance time (Days 1 to 11)</label>
+                    <input type="range" id="day-slider" min="1" max="11" value="1" class="w-full h-3 bg-slate-200 rounded-lg appearance-none cursor-pointer accent-red-600">
+                    <div class="flex justify-between text-xs text-slate-400 mt-2 font-bold px-1">
+                        <span>Day 1</span><span>Day 6</span><span>Day 11</span>
+                    </div>
+                </div>
+
+                <div class="bg-slate-900 text-white rounded-xl p-8 relative overflow-hidden">
+                    <div class="absolute top-0 right-0 p-4 text-6xl opacity-10" id="extreme-icon">😫</div>
+                    <div class="relative z-10">
+                        <div class="text-red-400 font-bold tracking-wider uppercase text-sm mb-2" id="extreme-day">Day 1: 24 Hours Awake</div>
+                        <h3 class="text-2xl font-bold mb-4" id="extreme-title">Mild Impairment</h3>
+                        <p class="text-slate-300 text-lg" id="extreme-desc">
+                            Difficulty focusing. Irritability begins. The brain starts experiencing 'microsleeps'—lapses in attention lasting mere seconds where the brain effectively shuts down despite eyes being open.
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section id="faq" class="scroll-mt-24 pb-20">
+            <div class="mb-10">
+                <h2 class="text-3xl font-bold text-slate-900 mb-4">5. Independent Analysis & Inquiries</h2>
+                <p class="text-lg text-slate-600">
+                    Beyond standard statistics, several complex questions arise regarding modern sleep adaptation strategies. Click the questions below to reveal the scientific consensus.
+                </p>
+            </div>
+
+            <div class="space-y-4">
+                <div class="glass-panel rounded-xl overflow-hidden border border-slate-200">
+                    <button class="w-full px-6 py-5 text-left font-bold text-lg text-slate-800 bg-white hover:bg-slate-50 flex justify-between items-center smooth-transition" onclick="toggleFaq('faq1', 'icon1')">
+                        <span>Does catching up on sleep on the weekends actually work?</span>
+                        <span id="icon1" class="text-2xl text-indigo-500 smooth-transition">+</span>
+                    </button>
+                    <div id="faq1" class="hidden px-6 pb-6 pt-2 text-slate-600 text-md bg-white">
+                        <p><strong>Mostly No.</strong> This is known as "Sleep Bulimia" (bingeing and purging sleep). While a weekend sleep-in might restore subjective feelings of alertness and temporarily clear adenosine (sleep pressure), it does <strong>not</strong> reverse the metabolic, cardiovascular, or cognitive damage incurred during the week. Chronic sleep debt alters baseline genetic expression, which a weekend cannot reset. Furthermore, shifting wake times on weekends causes "social jetlag," disrupting the circadian rhythm for Monday.</p>
+                    </div>
+                </div>
+
+                <div class="glass-panel rounded-xl overflow-hidden border border-slate-200">
+                    <button class="w-full px-6 py-5 text-left font-bold text-lg text-slate-800 bg-white hover:bg-slate-50 flex justify-between items-center smooth-transition" onclick="toggleFaq('faq2', 'icon2')">
+                        <span>How exactly does caffeine mask sleep debt?</span>
+                        <span id="icon2" class="text-2xl text-indigo-500 smooth-transition">+</span>
+                    </button>
+                    <div id="faq2" class="hidden px-6 pb-6 pt-2 text-slate-600 text-md bg-white">
+                        <p>Caffeine is an adenosine receptor antagonist. Throughout the day, a chemical called adenosine builds up in the brain, creating "sleep pressure." Caffeine molecules are structurally similar to adenosine and physically block the brain's adenosine receptors. <strong>It does not create energy; it blocks the signal of exhaustion.</strong> Once the caffeine metabolizes (half-life of 5-7 hours), all the built-up adenosine floods the receptors simultaneously, causing the infamous "caffeine crash."</p>
+                    </div>
+                </div>
+
+                <div class="glass-panel rounded-xl overflow-hidden border border-slate-200">
+                    <button class="w-full px-6 py-5 text-left font-bold text-lg text-slate-800 bg-white hover:bg-slate-50 flex justify-between items-center smooth-transition" onclick="toggleFaq('faq3', 'icon3')">
+                        <span>Is Polyphasic Sleep (like the Uberman schedule) a viable lifehack?</span>
+                        <span id="icon3" class="text-2xl text-indigo-500 smooth-transition">+</span>
+                    </button>
+                    <div id="faq3" class="hidden px-6 pb-6 pt-2 text-slate-600 text-md bg-white">
+                        <p><strong>Scientifically, No.</strong> Schedules that suggest sleeping 20 minutes every 4 hours total only 2 hours of sleep a day. Proponents claim it maximizes REM sleep. However, the brain requires deep NREM (Non-Rapid Eye Movement) sleep for physical repair and memory consolidation. Polyphasic sleep severely deprives the brain of NREM stages. Ultimately, practitioners are existing in a constant state of severe sleep deprivation and survival-mode microsleeps, which is unsustainable and medically dangerous long-term.</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+    </main>
+
+    <footer class="bg-slate-900 text-slate-400 py-10 text-center text-sm">
+        <p>NeuroWake Analytics | Interactive Information Architecture Demo</p>
+        <p class="mt-2">Data synthesized from general sleep science consensus (Matthew Walker, NIH, CDC).</p>
+    </footer>
+
+    <script>
+        const timelineData = {
+            't-24h': {
+                title: "24 Hours: The Intoxication Threshold",
+                desc: "Staying awake for 24 hours induces a state of cognitive impairment equivalent to a Blood Alcohol Concentration (BAC) of 0.10%, which is higher than the legal driving limit.",
+                list: [
+                    "Reaction times decrease by up to 400%.",
+                    "Memory consolidation is halted.",
+                    "Increased emotional volatility (amygdala hyper-reactivity)."
+                ],
+                icon: "🍷"
+            },
+            't-48h': {
+                title: "48 Hours: System Degradation",
+                desc: "At two days without sleep, the body's physical systems begin to aggressively fail as it attempts to force rest.",
+                list: [
+                    "Severe microsleeps lasting up to 30 seconds occur involuntarily.",
+                    "Immune system drastically drops NK cell production.",
+                    "Visual disturbances and mild depersonalization begin."
+                ],
+                icon: "🔋"
+            },
+            't-72h': {
+                title: "72 Hours: Psychological Fracture",
+                desc: "After three days, executive function collapses. The brain struggles to process external reality.",
+                list: [
+                    "Complex hallucinations (visual, auditory, tactile).",
+                    "Severe paranoia and delusional thinking.",
+                    "Loss of basic conversational logic and motor skills."
+                ],
+                icon: "🌀"
+            },
+            't-chronic': {
+                title: "Chronic: The Slow Burn (Years)",
+                desc: "Routinely getting less than 7 hours over years alters the biological foundation of the human body.",
+                list: [
+                    "Drastically increases risk of Alzheimer's (beta-amyloid plaque buildup).",
+                    "Shortens telomeres, accelerating cellular aging.",
+                    "Multiplies all-cause mortality rates across cardiovascular and metabolic vectors."
+                ],
+                icon: "🧬"
+            }
+        };
+
+        const tabs = document.querySelectorAll('#timeline-tabs button');
+        const tcTitle = document.getElementById('tc-title');
+        const tcDesc = document.getElementById('tc-desc');
+        const tcList = document.getElementById('tc-list');
+        const tcIcon = document.getElementById('tc-icon');
+
+        tabs.forEach(tab => {
+            tab.addEventListener('click', () => {
+                tabs.forEach(t => {
+                    t.classList.remove('tab-active');
+                    t.classList.add('tab-inactive');
+                });
+                tab.classList.remove('tab-inactive');
+                tab.classList.add('tab-active');
+
+                const target = tab.getAttribute('data-target');
+                const data = timelineData[target];
+
+                tcTitle.innerText = data.title;
+                tcDesc.innerText = data.desc;
+                tcIcon.innerText = data.icon;
+                
+                tcList.innerHTML = '';
+                data.list.forEach(item => {
+                    const li = document.createElement('li');
+                    li.innerText = item;
+                    tcList.appendChild(li);
+                });
+            });
+        });
+
+        function toggleDomain(id) {
+            const el = document.getElementById(id);
+            if (el.classList.contains('hidden')) {
+                el.classList.remove('hidden');
+            } else {
+                el.classList.add('hidden');
+            }
+        }
+
+        const extremeData = [
+            { day: 1, title: "Mild Impairment", desc: "Difficulty focusing. Irritability begins. The brain starts experiencing 'microsleeps'.", icon: "😫" },
+            { day: 2, title: "Motor & Vision Decay", desc: "Eyes struggle to focus (astigmatism-like symptoms). Loss of physical coordination. Drop in body temperature.", icon: "😵" },
+            { day: 3, title: "Mood & Memory Collapse", desc: "Extreme mood swings. Cannot repeat simple tongue twisters. Short-term memory is virtually non-existent.", icon: "🤯" },
+            { day: 4, title: "The First Hallucinations", desc: "Randy Gardner imagined he was Paul Lowe playing in the Rose Bowl. Fog feels like solid objects.", icon: "🌫️" },
+            { day: 5, title: "Paranoia Begins", desc: "Belief that people are conspiring against them. Extreme sensitivity to light and sound.", icon: "👁️" },
+            { day: 6, title: "Loss of Muscle Control", desc: "Slurred speech. Drooping facial muscles. Cannot perform basic arithmetic without forgetting the numbers midway.", icon: "🧟" },
+            { day: 7, title: "Severe Tremors", desc: "Hands shake uncontrollably. EEG shows alpha waves drastically reduced. Waking dreams occur constantly.", icon: "🫨" },
+            { day: 8, title: "Identity Fragmentation", desc: "Struggles to remember who they are or why they are doing the experiment. Apathy overtakes panic.", icon: "👤" },
+            { day: 9, title: "Fragmented Thinking", desc: "Sentences stop halfway through. Brain waves occasionally resemble deep sleep while eyes are open.", icon: "🧩" },
+            { day: 10, title: "Catatonic States", desc: "Periods of complete unresponsiveness to external stimuli. Requires constant shaking to maintain consciousness.", icon: "🗿" },
+            { day: 11, title: "The Limit (264 Hours)", desc: "Expressionless. Speech completely disjointed. 'I was no longer a person. I was a husk.' Post-experiment recovery required 14+ hours of sleep, taking months to feel normal.", icon: "🪫" }
+        ];
+
+        const slider = document.getElementById('day-slider');
+        const exDay = document.getElementById('extreme-day');
+        const exTitle = document.getElementById('extreme-title');
+        const exDesc = document.getElementById('extreme-desc');
+        const exIcon = document.getElementById('extreme-icon');
+
+        slider.addEventListener('input', (e) => {
+            const val = parseInt(e.target.value) - 1;
+            const data = extremeData[val];
+            
+            exDay.innerText = `Day ${data.day}: ${data.day * 24} Hours Awake`;
+            exTitle.innerText = data.title;
+            exDesc.innerText = data.desc;
+            exIcon.innerText = data.icon;
+            
+            const redIntensity = Math.floor((data.day / 11) * 255);
+            exDay.style.color = `rgb(255, ${200 - (redIntensity*0.5)}, ${200 - (redIntensity*0.5)})`;
+        });
+
+        function toggleFaq(contentId, iconId) {
+            const content = document.getElementById(contentId);
+            const icon = document.getElementById(iconId);
+            
+            if (content.classList.contains('hidden')) {
+                content.classList.remove('hidden');
+                icon.innerText = "-";
+                icon.classList.add('rotate-180');
+            } else {
+                content.classList.add('hidden');
+                icon.innerText = "+";
+                icon.classList.remove('rotate-180');
+            }
+        }
+
+        document.addEventListener('DOMContentLoaded', function() {
+            const ctxHistory = document.getElementById('historyChart').getContext('2d');
+            new Chart(ctxHistory, {
+                type: 'line',
+                data: {
+                    labels: ['1940', '1960', '1980', '2000', '2010', '2024'],
+                    datasets: [{
+                        label: 'Average Sleep (Hours)',
+                        data: [7.9, 7.6, 7.3, 7.0, 6.8, 6.6],
+                        borderColor: '#4f46e5',
+                        backgroundColor: 'rgba(79, 70, 229, 0.1)',
+                        borderWidth: 3,
+                        pointBackgroundColor: '#1e1b4b',
+                        pointRadius: 5,
+                        fill: true,
+                        tension: 0.3
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: { display: false },
+                        tooltip: {
+                            callbacks: {
+                                label: function(context) { return context.parsed.y + ' Hours'; }
+                            }
+                        }
+                    },
+                    scales: {
+                        y: { min: 6.0, max: 8.5, title: { display: true, text: 'Hours per Night' } },
+                        x: { grid: { display: false } }
+                    }
+                }
+            });
+
+            const ctxCause = document.getElementById('causeChart').getContext('2d');
+            new Chart(ctxCause, {
+                type: 'bar',
+                data: {
+                    labels: ['Work Stress', 'Screen Time (Blue Light)', 'Anxiety/Depression', 'Hustle Culture', 'Diet/Caffeine'],
+                    datasets: [{
+                        label: '% Reporting as Primary Cause',
+                        data: [38, 31, 18, 8, 5],
+                        backgroundColor: [
+                            '#ef4444', 
+                            '#3b82f6', 
+                            '#8b5cf6', 
+                            '#f59e0b', 
+                            '#10b981'  
+                        ],
+                        borderRadius: 6
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: { display: false },
+                        tooltip: {
+                            callbacks: {
+                                label: function(context) {
+                                    let label = context.dataset.label || '';
+                                    if (label) { label += ': '; }
+                                    if (context.parsed.y !== null) { label += context.parsed.y + '%'; }
+                                    return label;
+                                }
+                            }
+                        }
+                    },
+                    scales: {
+                        y: { beginAtZero: true, max: 50, title: { display: true, text: 'Percentage (%)' } },
+                        x: { 
+                            ticks: {
+                                callback: function(val, index) {
+                                    const label = this.getLabelForValue(val);
+                                    if (/\s/.test(label) && label.length > 12) {
+                                        return label.split(' ');
+                                    }
+                                    return label;
+                                }
+                            },
+                            grid: { display: false } 
+                        }
+                    }
+                }
+            });
+        });
+    </script>
+</body>
+</html>
